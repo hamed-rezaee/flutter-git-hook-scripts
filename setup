@@ -4,11 +4,19 @@
 HOOKS_DIR="$HOME/.git/hooks"
 SCRIPT_URL="https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push"
 
+# Define colors for output
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+NO_COLOR="\033[0m"
+
 # Function to print error messages
 error() {
-  echo "Error: $1" >&2
+  echo -e "${RED}❌ ERROR: $1${NO_COLOR}" >&2
+}
 
-  exit 1
+# Function to print success messages
+success() {
+  echo -e "${GREEN}✅ $1${NO_COLOR}"
 }
 
 # Check if a command exists
@@ -51,11 +59,6 @@ configure_git_hooks_directory() {
   run_command "git config --global core.hookspath ${HOOKS_DIR}" "Failed to configure Git to use hooks directory globally."
 }
 
-# Function to inform user about successful setup
-inform_success() {
-  echo "Git hook setup completed successfully."
-}
-
 # Main function to execute setup
 main() {
   # Check if curl is installed
@@ -74,7 +77,7 @@ main() {
   configure_git_hooks_directory
   
   # Inform the user about the successful setup
-  inform_success
+  success "Git hook setup completed successfully."
 }
 
 # Execute the main function
