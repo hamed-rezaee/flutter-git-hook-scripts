@@ -2,7 +2,8 @@
 
 # Global constant for hooks directory
 GLOBAL_HOOKS_DIR="$HOME/.git/hooks"
-SCRIPT_FILE="pre-push-hook"
+SCRIPT_FILE_SOURCE="pre-push-hook"
+SCRIPT_FILE_DESTINATION="pre-push"
 
 # Define colors for output
 RED="\033[0;31m"
@@ -44,7 +45,7 @@ create_hooks_directory() {
 copy_hook_script() {
   cd "${GLOBAL_HOOKS_DIR}" || error "Failed to navigate to hooks directory."
   
-  run_command "cp {SCRIPT_FILE} ${GLOBAL_HOOKS_DIR}/pre-push" "Failed to copy the pre-push hook script."
+  run_command "cp ${SCRIPT_FILE_SOURCE} ${GLOBAL_HOOKS_DIR}/${SCRIPT_FILE_DESTINATION}" "Failed to copy the pre-push hook script."
 }
 
 # Function to make hook script executable
