@@ -8,10 +8,17 @@ fi
 
 # Create hooks directory if it doesn't exist
 hooks_dir=~/.git/hooks
-mkdir -p "$hooks_dir"
+
+mkdir -p "$hooks_dir" || {
+    echo "Error: Failed to create hooks directory." >&2
+    exit 1
+}
 
 # Navigate to hooks directory
-cd "$hooks_dir" || exit
+cd "$hooks_dir" || {
+    echo "Error: Failed to navigate to hooks directory." >&2
+    exit 1
+}
 
 # Download the pre-push hook script
 curl_output=$(curl -sS -o pre-push https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push)
@@ -23,10 +30,16 @@ if [ $? -ne 0 ]; then
 fi
 
 # Make the hook script executable
-chmod u+x pre-push
+chmod u+x pre-push || {
+    echo "Error: Failed to make the hook script executable." >&2
+    exit 1
+}
 
 # Configure Git to use the hooks directory globally
-git config --global core.hookspath "$hooks_dir"
+git config --global core.hookspath "$hooks_dir" || {
+    echo "Error: Failed to configure Git to use hooks directory globally." >&2
+    exit 1
+}
 
 # Inform the user about the successful setup
 echo "Git hook setup completed successfully."
