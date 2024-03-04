@@ -1,47 +1,80 @@
 #!/bin/bash
 
-# Check if curl is installed
-if ! command -v curl &> /dev/null; then
-    echo "Error: curl command not found. Please install curl." >&2
-    exit 1
-fi
+# Global constant for hooks directory
+HOOKS_DIR="$HOME/.git/hooks"
 
-# Create hooks directory if it doesn't exist
-hooks_dir=~/.git/hooks
+# Function to print error messages
+error() {
+  echo "Error: $1" >&2
 
-mkdir -p "$hooks_dir" || {
-    echo "Error: Failed to create hooks directory." >&2
-    exit 1
+  exit 1
 }
 
-# Navigate to hooks directory
-cd "$hooks_dir" || {
-    echo "Error: Failed to navigate to hooks directory." >&2
-    exit 1
+# Check if a command exists
+check_command() {
+  if ! command -v "$1" &> /dev/null; then
+    error "$2 command not found. Make sure $2 is installed and available in your PATH."
+  fi
 }
 
-# Download the pre-push hook script
-curl_output=$(curl -sS -o pre-push https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push)
+# Run command with error handling
+run_command() {
+  echo "$1"
 
-# Check if download was successful
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to download the pre-push hook script." >&2
-    exit 1
-fi
-
-# Make the hook script executable
-chmod u+x pre-push || {
-    echo "Error: Failed to make the hook script executable." >&2
-    exit 1
+  if ! eval "$1"; then
+    error "$2"
+  fi
 }
 
-# Configure Git to use the hooks directory globally
-git config --global core.hookspath "$hooks_dir" || {
-    echo "Error: Failed to configure Git to use hooks directory globally." >&2
-    exit 1
+# Function to create hooks directory
+create_hooks_directory() {
+  run_command "mkdir -p ${HOOKS_DIR}" "Failed to create hooks directory."
 }
 
-# Inform the user about the successful setup
-echo "Git hook setup completed successfully."
+# Function to download hook script
+download_hook_script() {
+  cd "${HOOKS_DIR}" || error "Failed to navigate to hooks directory."
+  
+  run_command "curl -sS -o pre-push https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push" "Failed to download the pre-push hook script."
+}
 
-exit 0
+# Function to make hook script executable
+make_hook_executable() {
+  cd "${HOOKS_DIR}" || error "Failed to navigate to hooks directory."
+  
+  run_command "chmod u+x pre-push" "Failed to make the hook script executable."
+}
+
+# Function to configure Git to use hooks directory globally
+configure_git_hooks_directory() {
+  run_command "git config --global core.hookspath ${HOOKS_DIR}" "Failed to configure Git to use hooks directory globally."
+}
+
+# Function to inform user about successful setup
+inform_success() {
+  echo "Git hook setup completed successfully."
+}
+
+# Main function to execute setup
+main() {
+  # Check if curl is installed
+  check_command curl Curl
+
+  # Create hooks directory if it doesn't exist
+  create_hooks_directory
+  
+  # Download the pre-push hook script
+  download_hook_script
+  
+  # Make the hook script executable
+  make_hook_executable
+  
+  # Configure Git to use the hooks directory globally
+  configure_git_hooks_directory
+  
+  # Inform the user about the successful setup
+  inform_success
+}
+
+# Execute the main function
+main
