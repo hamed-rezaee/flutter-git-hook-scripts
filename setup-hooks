@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Global constant for hooks directory
-HOOKS_DIR="$HOME/.git/hooks"
+GLOBAL_HOOKS_DIR="$HOME/.git/hooks"
 SCRIPT_URL="https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push-hook"
 
 # Define colors for output
@@ -37,26 +37,26 @@ run_command() {
 
 # Function to create hooks directory
 create_hooks_directory() {
-  run_command "mkdir -p ${HOOKS_DIR}" "Failed to create hooks directory."
+  run_command "mkdir -p ${GLOBAL_HOOKS_DIR}" "Failed to create hooks directory."
 }
 
 # Function to download hook script
 download_hook_script() {
-  cd "${HOOKS_DIR}" || error "Failed to navigate to hooks directory."
+  cd "${GLOBAL_HOOKS_DIR}" || error "Failed to navigate to hooks directory."
   
   run_command "curl -sS -o pre-push ${SCRIPT_URL}" "Failed to download the pre-push hook script."
 }
 
 # Function to make hook script executable
 make_hook_executable() {
-  cd "${HOOKS_DIR}" || error "Failed to navigate to hooks directory."
+  cd "${GLOBAL_HOOKS_DIR}" || error "Failed to navigate to hooks directory."
   
   run_command "chmod u+x pre-push" "Failed to make the hook script executable."
 }
 
 # Function to configure Git to use hooks directory globally
 configure_git_hooks_directory() {
-  run_command "git config --global core.hookspath ${HOOKS_DIR}" "Failed to configure Git to use hooks directory globally."
+  run_command "git config --global core.hookspath ${GLOBAL_HOOKS_DIR}" "Failed to configure Git to use hooks directory globally."
 }
 
 # Main function to execute setup
