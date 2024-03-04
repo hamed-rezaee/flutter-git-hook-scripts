@@ -1,5 +1,14 @@
 #!/bin/bash
 
+hook_name="pre-push"
+
+if [ -f .git/hooks/${hook_name} ]; then
+  if ! .git/hooks/{hook_name} "$@"; then
+    echo "Local ${hook_name} hook failed. Aborting commit."
+    exit 1
+  fi
+fi
+
 if ! command -v flutter &> /dev/null; then
   error "Flutter command not found. Make sure Flutter is installed and available in your PATH."
   exit 1
