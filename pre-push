@@ -1,10 +1,18 @@
 #!/bin/bash
 
+error() {
+  echo -e "\033[0;31m❌ $1\033[0m"
+}
+
+success() {
+  echo -e "\033[0;32m✅ $1\033[0m"
+}
+
 hook_name="pre-push"
 
 if [ -f .git/hooks/${hook_name} ]; then
   if ! .git/hooks/${hook_name} "$@"; then
-    echo "Local ${hook_name} hook failed. Aborting commit."
+    error "Local ${hook_name} hook execution failed."
     exit 1
   fi
 fi
@@ -18,14 +26,6 @@ if ! command -v dart &> /dev/null; then
   error "Dart command not found. Make sure Dart SDK is installed and available in your PATH."
   exit 1
 fi
-
-error() {
-  echo -e "\033[0;31m❌ $1\033[0m"
-}
-
-success() {
-  echo -e "\033[0;32m✅ $1\033[0m"
-}
 
 format() {
   echo "📝 Running Flutter format..."
