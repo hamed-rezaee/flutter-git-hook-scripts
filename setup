@@ -2,6 +2,7 @@
 
 # Global constant for hooks directory
 HOOKS_DIR="$HOME/.git/hooks"
+SCRIPT_URL="https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push"
 
 # Function to print error messages
 error() {
@@ -35,7 +36,7 @@ create_hooks_directory() {
 download_hook_script() {
   cd "${HOOKS_DIR}" || error "Failed to navigate to hooks directory."
   
-  run_command "curl -sS -o pre-push https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push" "Failed to download the pre-push hook script."
+  run_command "curl -sS -o pre-push ${SCRIPT_URL}" "Failed to download the pre-push hook script."
 }
 
 # Function to make hook script executable
