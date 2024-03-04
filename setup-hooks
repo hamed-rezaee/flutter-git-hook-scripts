@@ -2,7 +2,7 @@
 
 # Global constant for hooks directory
 HOOKS_DIR="$HOME/.git/hooks"
-SCRIPT_URL="https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push"
+SCRIPT_URL="https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push-hook"
 
 # Define colors for output
 RED="\033[0;31m"
