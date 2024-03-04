@@ -23,41 +23,29 @@ check_command() {
   fi
 }
 
-# Run Flutter format
-run_format() {
-  echo "📝 Running Flutter format..."
+# Run command with error handling
+run_command() {
+  echo "$1"
 
-  dart format lib
-  dart format test
-
-  if [ $? -ne 0 ]; then
-    error "Formatting failed. Please fix formatting issues before committing."
+  if ! eval "$1"; then
+    error "$2"
     exit 1
   fi
+}
+
+# Run Flutter format
+run_format() {
+  run_command "dart format lib && dart format test" "Formatting failed. Please fix formatting issues before committing."
 }
 
 # Run Dart analysis
 run_analyze() {
-  echo "🔍 Running Dart analyze..."
-
-  dart analyze
-
-  if [ $? -ne 0 ]; then
-    error "Static analysis failed. Please fix analysis issues before committing."
-    exit 1
-  fi
+  run_command "dart analyze" "Static analysis failed. Please fix analysis issues before committing."
 }
 
 # Run Flutter tests
 run_tests() {
-  echo "🧪 Running Flutter tests..."
-
-  flutter test
-
-  if [ $? -ne 0 ]; then
-    error "Tests failed. Please fix failing tests before committing."
-    exit 1
-  fi
+  run_command "flutter test" "Tests failed. Please fix failing tests before committing."
 }
 
 # Main function to execute pre-commit checks
