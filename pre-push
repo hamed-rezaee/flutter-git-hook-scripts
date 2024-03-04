@@ -3,16 +3,16 @@
 # Define colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-NC='\033[0m' # No Color
+NO_COLOR='\033[0m'
 
 # Function to print error messages
 error() {
-  echo -e "${RED}❌ ERROR: $1${NC}" >&2
+  echo -e "${RED}❌ ERROR: $1${NO_COLOR}" >&2
 }
 
 # Function to print success messages
 success() {
-  echo -e "${GREEN}✅ $1${NC}"
+  echo -e "${GREEN}✅ $1${NO_COLOR}"
 }
 
 # Check if a command exists
@@ -26,8 +26,10 @@ check_command() {
 # Run Flutter format
 run_format() {
   echo "📝 Running Flutter format..."
+
   dart format lib
   dart format test
+
   if [ $? -ne 0 ]; then
     error "Formatting failed. Please fix formatting issues before committing."
     exit 1
@@ -37,7 +39,9 @@ run_format() {
 # Run Dart analysis
 run_analyze() {
   echo "🔍 Running Dart analyze..."
+
   dart analyze
+
   if [ $? -ne 0 ]; then
     error "Static analysis failed. Please fix analysis issues before committing."
     exit 1
@@ -47,7 +51,9 @@ run_analyze() {
 # Run Flutter tests
 run_tests() {
   echo "🧪 Running Flutter tests..."
+
   flutter test
+
   if [ $? -ne 0 ]; then
     error "Tests failed. Please fix failing tests before committing."
     exit 1
@@ -65,9 +71,11 @@ main() {
     fi
   fi
 
+  # Check for necessary tools
   check_command flutter Flutter
   check_command dart Dart
 
+  # Run pre-commit checks
   run_format
   run_analyze
   run_tests
