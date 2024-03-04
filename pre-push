@@ -3,7 +3,7 @@
 hook_name="pre-push"
 
 if [ -f .git/hooks/${hook_name} ]; then
-  if ! .git/hooks/{hook_name} "$@"; then
+  if ! .git/hooks/${hook_name} "$@"; then
     echo "Local ${hook_name} hook failed. Aborting commit."
     exit 1
   fi
