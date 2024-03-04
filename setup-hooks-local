@@ -19,24 +19,52 @@ success() {
   echo -e "${GREEN}✅ $1${NO_COLOR}"
 }
 
+# Check if a command exists
+check_command() {
+  if ! command -v "$1" &> /dev/null; then
+    error "$2 command not found. Make sure $2 is installed and available in your PATH."
+  fi
+}
+
+# Run command with error handling
+run_command() {
+  echo "$1"
+
+  if ! eval "$1"; then
+    error "$2"
+  fi
+}
+
+# Function to create hooks directory
+create_hooks_directory() {
+  run_command "mkdir -p ${GLOBAL_HOOKS_DIR}" "Failed to create hooks directory."
+}
+
 # Function to copy hook script
 copy_hook_script() {
-  cp "${SCRIPT_FILE}" "${GLOBAL_HOOKS_DIR}/pre-push"
+  cd "${GLOBAL_HOOKS_DIR}" || error "Failed to navigate to hooks directory."
+  
+  run_command "cp {SCRIPT_FILE} ${GLOBAL_HOOKS_DIR}/pre-push" "Failed to copy the pre-push hook script."
 }
 
 # Function to make hook script executable
 make_hook_executable() {
-  chmod u+x "${GLOBAL_HOOKS_DIR}/pre-push"
+  cd "${GLOBAL_HOOKS_DIR}" || error "Failed to navigate to hooks directory."
+  
+  run_command "chmod u+x pre-push" "Failed to make the hook script executable."
 }
 
 # Function to configure Git to use hooks directory globally
 configure_git_hooks_directory() {
-  git config --global core.hookspath "${GLOBAL_HOOKS_DIR}"
+  run_command "git config --global core.hookspath ${GLOBAL_HOOKS_DIR}" "Failed to configure Git to use hooks directory globally."
 }
 
 # Main function to execute setup
 main() {
-  # Copy the hook script to hooks directory
+  # Create hooks directory if it doesn't exist
+  create_hooks_directory
+  
+  # Copy the pre-push hook script
   copy_hook_script
   
   # Make the hook script executable
