@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Global constant for hooks directory
+GLOBAL_HOOKS_DIR="$HOME/.git/hooks"
+SCRIPT_FILE="pre-push-hook"
+
+# Define colors for output
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+NO_COLOR="\033[0m"
+
+# Function to print error messages
+error() {
+  echo -e "${RED}❌ ERROR: $1${NO_COLOR}" >&2
+}
+
+# Function to print success messages
+success() {
+  echo -e "${GREEN}✅ $1${NO_COLOR}"
+}
+
+# Function to copy hook script
+copy_hook_script() {
+  cp "${SCRIPT_FILE}" "${GLOBAL_HOOKS_DIR}/pre-push"
+}
+
+# Function to make hook script executable
+make_hook_executable() {
+  chmod u+x "${GLOBAL_HOOKS_DIR}/pre-push"
+}
+
+# Function to configure Git to use hooks directory globally
+configure_git_hooks_directory() {
+  git config --global core.hookspath "${GLOBAL_HOOKS_DIR}"
+}
+
+# Main function to execute setup
+main() {
+  # Copy the hook script to hooks directory
+  copy_hook_script
+  
+  # Make the hook script executable
+  make_hook_executable
+  
+  # Configure Git to use the hooks directory globally
+  configure_git_hooks_directory
+  
+  # Inform the user about the successful setup
+  success "Git hook setup completed successfully."
+}
+
+# Execute the main function
+main
