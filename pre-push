@@ -1,0 +1,63 @@
+#!/bin/bash
+
+if ! command -v flutter &> /dev/null; then
+  error "Flutter command not found. Make sure Flutter is installed and available in your PATH."
+  exit 1
+fi
+
+if ! command -v dart &> /dev/null; then
+  error "Dart command not found. Make sure Dart SDK is installed and available in your PATH."
+  exit 1
+fi
+
+error() {
+  echo -e "\033[0;31m❌ $1\033[0m"
+}
+
+success() {
+  echo -e "\033[0;32m✅ $1\033[0m"
+}
+
+format() {
+  echo "📝 Running Flutter format..."
+
+  dart format lib
+  dart format test
+
+  if [ $? -ne 0 ]; then
+    error "Formatting failed. Please fix formatting issues before committing."
+    exit 1
+  fi
+}
+
+analyze() {
+  echo "🔍 Running Dart analyze..."
+
+  dart analyze
+
+  if [ $? -ne 0 ]; then
+    error "Static analysis failed. Please fix analysis issues before committing."
+    exit 1
+  fi
+}
+
+test() {
+  echo "🧪 Running Flutter tests..."
+
+  flutter test
+
+
+  if [ $? -ne 0 ]; then
+    error "Tests failed. Please fix failing tests before committing."
+    exit 1
+  fi
+}
+
+
+format
+analyze
+test
+
+success "All checks passed. You can proceed with the commit."
+
+exit 0
