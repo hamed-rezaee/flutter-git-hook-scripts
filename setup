@@ -1,0 +1,10 @@
+#!/bin/bash
+
+mkdir -p ~/.git/hooks
+cd ~/.git/hooks
+curl -o pre-push https://raw.githubusercontent.com/hamed-rezaee/flutter-git-hook-scripts/main/pre-push
+chmod u+x ~/.git/hooks/*
+
+git config --global core.hookspath ~/.git/hooks
+
+exit 0
